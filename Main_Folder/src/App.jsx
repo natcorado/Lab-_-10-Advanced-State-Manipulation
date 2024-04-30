@@ -14,10 +14,12 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskIcon from '@mui/icons-material/Task';
+import Typography from '@mui/material/Typography';
 
 function App() {
   const [task, setTask] = useState('');
   const [list, setList] = useState([]);
+  const [taskCount, setTaskCount] = useState(list.length);
 
   function handleTaskInput(event) {
     setTask(event.target.value);
@@ -27,6 +29,7 @@ function App() {
     if (task.trim() != '') {
       setList((prevList) => [...prevList, task]);
       setTask('');
+      setTaskCount((prevCount) => prevCount + 1);
     }
   }
 
@@ -36,6 +39,13 @@ function App() {
       newList.splice(index, 1);
       return newList;
     });
+
+    setTaskCount((prevCount) => prevCount - 1);
+  }
+
+  function handleDeleteAll() {
+    setList([]);
+    setTaskCount(0);
   }
 
   return (
@@ -48,6 +58,13 @@ function App() {
       }}
     >
       <h2 style={{ fontFamily: 'Arial, sans-serif' }}>Mini Task Dashboard</h2>
+      <Typography variant="body1" gutterBottom>
+        {taskCount === 0
+          ? 'No tasks pending'
+          : taskCount === 1
+          ? `${taskCount} pending task`
+          : `${taskCount} pending tasks`}
+      </Typography>
 
       <Grid container spacing={2}>
         <Grid item xs={12} md={8} container>
@@ -65,7 +82,15 @@ function App() {
           </Button>
         </Grid>
       </Grid>
-
+      <Box height={10} />
+      <Button
+        variant="outlined"
+        color="error"
+        fullWidth
+        onClick={handleDeleteAll}
+      >
+        Delete All Tasks
+      </Button>
       <Box height={20} />
 
       <TableContainer component={Paper}>
